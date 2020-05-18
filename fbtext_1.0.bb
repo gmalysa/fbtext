@@ -9,11 +9,10 @@ inherit pkgconfig
 S = "${WORKDIR}"
 
 SRC_URI = " \
-	file://LICENSE \
-	file://main.c \
-	file://dump.c \
-	file://Makefile \
+	git://github.com/gmalysa/fbtext.git;protocol=https;branch=master \
 "
+
+SRCREV = "${AUTOREV}"
 
 do_compile() {
 	oe_runmake -C ${S} fbtext
