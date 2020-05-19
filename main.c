@@ -21,6 +21,7 @@ void usage() {
 	printf("       -x [off]  - Use an [off] pixel horizontal offset for text (default 0)\n");
 	printf("       -t [dest] - Use [dest] as the framebuffer destination (default /dev/fb0)\n");
 	printf("       -y [off]  - Use an [off] pixel vertical offset for text (default 0)\n");
+	printf("       -p [size] - Use a pitch of [size] bytes between lines in the framebuffer (default 32)\n");
 	printf("\n");
 	exit(1);
 }
@@ -31,8 +32,6 @@ int main(int argc, char *argv[]) {
 	int c;
 	const char *target = "/dev/fb0";
 	FILE *fp;
-	int pixheight = 64;
-	int pixwidth = 128;
 
 	struct draw2fb_opts_t config = {
 		.font = "/usr/share/fonts/ttf/LiberationMono-Regular.ttf",
@@ -44,10 +43,11 @@ int main(int argc, char *argv[]) {
 		.yoffset = 0,
 		.overdraw = 0,
 		.W = 128,
-		.H = 64,
+		.H = 32,
+		.pitch = 32,
 	};
 
-	while ((c = getopt(argc, argv, "hWof:s:l:x:y:t:")) != -1) {
+	while ((c = getopt(argc, argv, "hWof:s:l:x:y:t:p:")) != -1) {
 		switch (c) {
 		case 'f':
 			config.font = optarg;
@@ -72,6 +72,9 @@ int main(int argc, char *argv[]) {
 			break;
 		case 't':
 			target = optarg;
+			break;
+		case 'p':
+			config.pitch = atoi(optarg);
 			break;
 		case 'h':
 			printf("Help\n");
