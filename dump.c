@@ -2,6 +2,19 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdint.h>
+#include <unistd.h>
+
+void usage() {
+	printf("\n");
+	printf("Usage:\n");
+	printf("\n");
+	printf("    fbdump [options]\n");
+	printf("\n");
+	printf("    where options are:\n");
+	printf("        -t [file] - Use [file] as the source framebuffer to dump (default /dev/fb0)");
+	printf("\n");
+	exit(1);
+}
 
 int main(int argc, char **argv) {
 	uint8_t data[1024];
@@ -13,6 +26,22 @@ int main(int argc, char **argv) {
 	int H = 8;
 	int pixheight = 64;
 	int pixwidth = 128;
+	int c;
+
+	while ((c = getopt(argc, argv, "t:")) != -1) {
+		switch (c) {
+		case 't':
+			target = optarg;
+			break;
+		case 'h':
+			printf("Help\n");
+			usage();
+			break;
+		default:
+			printf("Unrecognized option '%c'\n", c);
+			usage();
+		}
+	}
 
 	fp = fopen(target, "r");
 	if (!fp) {
