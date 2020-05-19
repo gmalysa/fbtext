@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <unistd.h>
 
-#include <draw2fb.h>
+#include "draw2fb.h"
 
 void usage() {
 	printf("\n");
@@ -27,11 +27,12 @@ void usage() {
 }
 
 int main(int argc, char *argv[]) {
-	uint8_t data[1024] = {0};
-	uint8_t fb[1024] = {0};
+	uint8_t *data;
+	uint8_t *fb;
 	int c;
 	const char *target = "/dev/fb0";
 	FILE *fp;
+	size_t size;
 
 	struct draw2fb_opts_t config = {
 		.font = "/usr/share/fonts/ttf/LiberationMono-Regular.ttf",
@@ -44,7 +45,7 @@ int main(int argc, char *argv[]) {
 		.overdraw = 0,
 		.W = 128,
 		.H = 32,
-		.pitch = 32,
+		.pitch = 16,
 	};
 
 	while ((c = getopt(argc, argv, "hWof:s:l:x:y:t:p:")) != -1) {
@@ -86,6 +87,10 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
+	size = config.H * config.pitch;
+	data = calloc(1, size);
+	fb = calloc(1, size);
+
 	if (optind >= argc) {
 		printf("Input string to display missing!\n");
 		usage();
@@ -97,13 +102,13 @@ int main(int argc, char *argv[]) {
 		usage();
 	}
 
-	fread(data, 1024, 1, fp);
+	fread(data, size, 1, fp);
 	fclose(fp);
 
 	draw2fb_string(&config, argv[optind], data);
 
 	fp = fopen(target, "w");
-	fwrite(data, 1024, 1, fp);
+	fwrite(data, size, 1, fp);
 	fclose(fp);
 
 	return 0;
