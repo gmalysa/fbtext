@@ -1,12 +1,12 @@
 DESCRIPTION = "Simple program for writing a new framebuffer to stdout that contains the given input string"
 LICENSE = "MIT"
-LIC_FILES_CHKSUM = "file://${WORKDIR}/LICENSE;md5=f98d55b2dbfee628e6c8b0445667d84d"
+LIC_FILES_CHKSUM = "file://${S}/LICENSE;md5=f17cf300a93d4fa3f9f0cd408949ade3"
 
 DEPENDS = "freetype liberation-fonts draw2fb"
 
 inherit pkgconfig
 
-S = "${WORKDIR}"
+S = "${WORKDIR}/git"
 
 SRC_URI = " \
 	git://github.com/gmalysa/fbtext.git;protocol=https;branch=master \
@@ -21,8 +21,8 @@ do_compile() {
 
 do_install() {
 	install -d ${D}${bindir}
-	install -m 0755 ${WORKDIR}/fbtext ${D}${bindir}/fbtext
-	install -m 0755 ${WORKDIR}/fbdump ${D}${bindir}/fbdump
+	install -m 0755 ${S}/fbtext ${D}${bindir}/fbtext
+	install -m 0755 ${S}/fbdump ${D}${bindir}/fbdump
 }
 
 FILES_${PN} = " \
